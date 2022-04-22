@@ -1,8 +1,8 @@
 const url = "http://localhost:3000/api/products"
 
 fetch(url)
-.then(res => res.json())
-.then((json) => addProducts(json)) 
+.then(res => res.json())//on transforme la responce en .json
+.then((json) => addProducts(json)) //le then renvoie les donnés a addProducts
 
 const addProducts = (data) => { 
     console.log(addProducts)
@@ -17,7 +17,7 @@ const addProducts = (data) => {
         const h3 = data[i].name
         const p = data[i].description
         const anchor = document.createElement("a")/*on crée une balise anchor <a><a/>*/
-        anchor.href = "./product.html?id=" +ids /*j'ai rajouté un id= a voir avec Guillaume*/
+        anchor.href = "./product.html?id=" +ids 
         console.log(anchor)
         console.log(items)
         const article = makeArticle(src, altTxt,h3 ,p)
@@ -36,7 +36,7 @@ const makeArticle = (src, altTxt, h3, p) => {
     article.appendChild(productName)
     const productDescription = makeParagraphe(p)
     article.appendChild(productDescription)
-    return article
+    return article //retourne la valeur de article
 }
 
 const makeImage = (src, altTxt) => {

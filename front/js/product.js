@@ -1,9 +1,9 @@
-const queryString = window.location.search; 
+const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const id = urlParams.get("id");
-console.log("l'id de la page", id) //Pourquoi je n'ai pas de donné sur mon id "null"
+console.log("l'id de la page", id) 
 
-for (let p of urlParams){  //c'est juste pour voir sur la console? *voir avec Guillaume*
+for (let p of urlParams){ 
     console.log(p)
 }
 
@@ -56,3 +56,31 @@ const makeColors = (colors) => {
     });
 }
 
+const button = document.querySelector("#addToCart")
+if (button) {
+button.addEventListener("click", function(){ //de préférence fonction anonyme en callback plutot que fléché
+    const color = document.querySelector("#colors").value
+    const quantity = document.querySelector("#quantity").value
+    if (!color || !quantity){
+    alert("S'il vous plait choisissez une couleur et une quantité")
+    return ;
+    }
+
+    const data = {
+        id : id,
+        color : color,
+        quantity : Number(quantity)
+    }
+    const storage = JSON.parse(localStorage.getItem("obj"))
+    let dataArray
+      if (!Array.isArray(storage)){
+        dataArray = [data]
+      }
+      else {
+        dataArray = [...storage,data]
+      }
+    let objData = JSON.stringify(dataArray); //localStorage n'est pas capable de "storer" des objet il faut le passer en string avec JSON.stringify
+    localStorage.setItem("obj", objData)
+    window.location.href = "cart.html"
+})
+}
