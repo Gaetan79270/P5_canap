@@ -57,6 +57,6 @@ const makeParagraphe = (littleText) => {
     const p = document.createElement("p")
     p.innerText = littleText
     p.classList.add("productDescription")
-    return p
+    return p  
 }
 

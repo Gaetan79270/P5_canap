@@ -71,10 +71,16 @@ button.addEventListener("click", function(){ //de préférence fonction anonyme 
         color : color,
         quantity : Number(quantity)
     }
-    const storage = JSON.parse(localStorage.getItem("obj"))
+    const obj = localStorage.getItem("obj")
+    const storage = obj!=undefined?JSON.parse(obj):"" //if else sur un ligne
     let dataArray
       if (!Array.isArray(storage)){
         dataArray = [data]
+      }
+      else if (storage.some(canap => canap.id == id && canap.color == color)){
+        let index = storage.findIndex(canap => canap.id == id && canap.color == color);
+        storage[index].quantity += data.quantity
+        dataArray = [...storage]
       }
       else {
         dataArray = [...storage,data]
