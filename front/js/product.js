@@ -1,21 +1,13 @@
-const queryString = window.location.search;
+const queryString = window.location.search; //.search nous donne l'id
 const urlParams = new URLSearchParams(queryString);
 const id = urlParams.get("id");
-console.log("l'id de la page", id) 
-
-for (let p of urlParams){ 
-    console.log(p)
-}
 
 fetch(`http://localhost:3000/api/products/${id}`) //string interpolation
 .then((res) => res.json())
 .then((json) => handleData(json))
-//.then((json) => console.log(json))
 
 const handleData = (product) => {
-    console.log("voici les détails du produit" , {product})
     const { altTxt, colors, description, imageUrl, name, price} =product
-    console.log(colors)
     makeImage(imageUrl, altTxt)
     makeTitle(name)
     makePrice(price)
@@ -28,12 +20,12 @@ const makeImage = (imageUrl, altTxt) => {
     image.src = imageUrl
     image.alt = altTxt
     const parent = document.querySelector(".item__img")
-    if (parent) parent.appendChild(image)
+    if (parent) parent.appendChild(image) // if parent = != null
 }
 
 const makeTitle = (name) => {
     const h1 = document.querySelector("#title")
-    if (h1) h1.textcontent = name
+    if (h1) h1.textcontent = name 
 }
 
 const makePrice = (price) => {
@@ -58,7 +50,7 @@ const makeColors = (colors) => {
 
 const button = document.querySelector("#addToCart")
 if (button) {
-button.addEventListener("click", function(){ //de préférence fonction anonyme en callback plutot que fléché
+button.addEventListener("click", function(){ //ajout d'un événement quand on clique sur ajouter au panier
     const color = document.querySelector("#colors").value
     const quantity = document.querySelector("#quantity").value
     if (!color || !quantity){
@@ -69,11 +61,11 @@ button.addEventListener("click", function(){ //de préférence fonction anonyme 
     const data = {
         id : id,
         color : color,
-        quantity : Number(quantity)
+        quantity : Number(quantity)//la quantité était en string
     }
     const obj = localStorage.getItem("obj")
     const storage = obj!=undefined?JSON.parse(obj):"" //if else sur un ligne
-    let dataArray
+    let dataArray //prend la couleur, quantité, et l'id
       if (!Array.isArray(storage)){
         dataArray = [data]
       }
@@ -85,8 +77,8 @@ button.addEventListener("click", function(){ //de préférence fonction anonyme 
       else {
         dataArray = [...storage,data]
       }
-    let objData = JSON.stringify(dataArray); //localStorage n'est pas capable de "storer" des objet il faut le passer en string avec JSON.stringify
+    let objData = JSON.stringify(dataArray); //sert a passer les objet en string pour le localStorage
     localStorage.setItem("obj", objData)
-    window.location.href = "cart.html"
+    window.location.href = "cart.html" //nous renvoie a la page 'cart' (commande)
 })
 }

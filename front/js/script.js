@@ -1,14 +1,11 @@
 const url = "http://localhost:3000/api/products"
 
 fetch(url)
-.then(res => res.json())//on transforme la responce en .json
-.then((json) => addProducts(json)) //le then renvoie les donnés a addProducts
+.then(res => res.json())//on transforme la responce en .json et nous renvoie une nouvelle promesse
+.then((json) => addProducts(json)) //On récupére les données de la promesse
 
 const addProducts = (data) => { 
-    console.log(addProducts)
-    console.log({data})
     const id = data[0]._id
-    console.log("l'id du kanap", id)
     const items = document.getElementById("items");
     for (let i = 0 ; i<data.length; i++){
         const ids = data[i]._id
@@ -18,25 +15,21 @@ const addProducts = (data) => {
         const p = data[i].description
         const anchor = document.createElement("a")/*on crée une balise anchor <a><a/>*/
         anchor.href = "./product.html?id=" +ids 
-        console.log(anchor)
-        console.log(items)
         const article = makeArticle(src, altTxt,h3 ,p)
         anchor.appendChild(article)
-        items.appendChild(anchor) /*appenChild fonction qui donne un enfant a items (anchor)*/
+        items.appendChild(anchor) /*appenChild method qui donne un enfant a items (anchor)*/
     }
 };
 
-// ajout de fonctions pour ajouter les balise dans la section
 const makeArticle = (src, altTxt, h3, p) => {
     const article = document.createElement("article")
-    console.log(article)
     const image = makeImage(src, altTxt)
     article.appendChild(image)
     const productName = makeH3(h3)
     article.appendChild(productName)
     const productDescription = makeParagraphe(p)
     article.appendChild(productDescription)
-    return article //retourne la valeur de article
+    return article 
 }
 
 const makeImage = (src, altTxt) => {
