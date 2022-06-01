@@ -1,35 +1,35 @@
 fetch(`http://localhost:3000/api/products`)
-.then((res) => res.json())
-.then((json) => cartData(json))
+    .then((res) => res.json())
+    .then((json) => cartData(json))
 
 const cart = []   //ligne 26
 const cartData = (json) => {
     let objData = localStorage.getItem("obj");
     let data = JSON.parse(objData); //parse = transformation en objet != stringify
-    const numberOfItems = data.length 
-    
-    for (let i = 0 ; i <numberOfItems; i++) { //ici on ajoute les élément que nous n'avons pas dans le local storage
+    const numberOfItems = data.length
+
+    for (let i = 0; i < numberOfItems; i++) { //ici on ajoute les élément que nous n'avons pas dans le local storage
         const item = data[i]
         const id = item.id
         let product
-        let name , images , price , alt
-        for (let j = 0 ; j <json.length ; j++){
-            if (id === json[j]._id){
+        let name, images, price, alt
+        for (let j = 0; j < json.length; j++) {
+            if (id === json[j]._id) {
                 product = json[j]
-                name = product.name 
+                name = product.name
                 images = product.imageUrl
                 price = product.price
                 alt = product.altTxt
             }
         }
-        const itemComplet = {...item , name , images , price ,alt}   //... = rest parameter, ca sert à assembler plusieur valeurs dans un tableau
-        cart.push(itemComplet) //.push méthode qui ajoute des élément aux tableau et retourne une nouvelle taille de tableau
+        const itemComplet = { ...item, name, images, price, alt }   
+        cart.push(itemComplet) 
         displayItem(itemComplet)
     }
-    const {totalPrice, totalQuantity} = totalPriceTotalQuantity() //enregistrer 
+    const { totalPrice, totalQuantity } = totalPriceTotalQuantity()  
     displayTotalQuantity(totalQuantity)
     displayTotalPrice(totalPrice)
-    
+
 }
 
 const displayItem = (item) => {
@@ -46,7 +46,7 @@ const displayArticle = (article) => {
     section.appendChild(article)
 }
 
-const displayImage = (article, div) =>{
+const displayImage = (article, div) => {
     article.appendChild(div)
 }
 
@@ -55,13 +55,13 @@ const displayCartItemContent = (article, cartItemContent) => {
 }
 
 const totalPriceTotalQuantity = () => {
-    let totalQuantity = 0   
-    let totalPrice = 0 
-    for (let i = 0; i < cart.length; i++){
-    totalQuantity += cart[i].quantity  
-    totalPrice += (cart[i].price * cart[i].quantity) 
+    let totalQuantity = 0
+    let totalPrice = 0
+    for (let i = 0; i < cart.length; i++) {
+        totalQuantity += cart[i].quantity
+        totalPrice += (cart[i].price * cart[i].quantity)
     }
-    return {totalPrice, totalQuantity}
+    return { totalPrice, totalQuantity }
 }
 const displayTotalQuantity = (totalQuantity) => {
     const totalQuantitySelect = document.querySelector("#totalQuantity")
@@ -73,7 +73,7 @@ const displayTotalPrice = (totalPrice) => {
     totalPriceSelect.textContent = totalPrice
 }
 
-const makeArticle = (item) =>{
+const makeArticle = (item) => {
     const article = document.createElement("article")
     article.classList.add("cart__item")
     article.dataset.id = item.id
@@ -86,25 +86,25 @@ const makeImage = (item) => {
     const div = document.createElement("div")
     div.classList.add("cart__item__img")
     const image = document.createElement("img")
-    image.src = item.images //item ligne 34
+    image.src = item.images 
     image.alt = item.alt
     div.appendChild(image)
     return div
 }
 
-const makeCartItemContent = (item) =>{
+const makeCartItemContent = (item) => {
     const cartItemContent = document.createElement("div")
     cartItemContent.classList.add("cart__item__content")
     const description = makeDescription(item)
     const settings = makeSettings(item)
-    
+
     cartItemContent.appendChild(description)
     cartItemContent.appendChild(settings)
     return cartItemContent
 }
 
-const makeDescription = (item) =>{
-    
+const makeDescription = (item) => {
+
     const description = document.createElement("div")
     description.classList.add("cart__item__content__description")
     const h2 = document.createElement("h2")
@@ -113,7 +113,7 @@ const makeDescription = (item) =>{
     p.textContent = item.color;
     const p2 = document.createElement("p")
     p2.textContent = item.price + "€";
-    description.appendChild(h2) 
+    description.appendChild(h2)
     description.appendChild(p)
     description.appendChild(p2)
     return description
@@ -122,7 +122,7 @@ const makeDescription = (item) =>{
 const makeSettings = (item) => {
     const settings = document.createElement("div")
     settings.classList.add("cart__item__content__settings")
-    addQuantityToSettings(settings, item) 
+    addQuantityToSettings(settings, item)
     addDeleteToSettings(settings, item)
     return settings
 }
@@ -132,17 +132,17 @@ const addQuantityToSettings = (settings, item) => {  //on prend la valeur de mak
     quantity.classList.add("cart__item__content__settings__quantity")
     const p = document.createElement("p")
     p.textContent = "Qté : "
-    quantity.appendChild(p) 
+    quantity.appendChild(p)
     const input = document.createElement("input")
-    input.type ="number"
+    input.type = "number"
     input.classList.add("itemQuantity")
     input.name = "itemQuantity"
-    input.min = "1" 
+    input.min = "1"
     input.max = "100"
     input.value = item.quantity
-    input.addEventListener("input", () => updatePriceAndQuatity(item.id, input.value, )) //on récupére la valeur ligne 152
+    input.addEventListener("input", () => updatePriceAndQuatity(item.id, input.value,)) 
     settings.appendChild(quantity)
-    quantity.appendChild(input) 
+    quantity.appendChild(input)
 
 }
 
@@ -161,15 +161,15 @@ const addDeleteToSettings = (settings, item) => {
 const deleteProduct = (item) => {
     const itemToDelete = cart.findIndex(product => product.id === item.id && item.color)
     cart.splice(itemToDelete, 1)
-    const {totalPrice, totalQuantity} = totalPriceTotalQuantity()
+    const { totalPrice, totalQuantity } = totalPriceTotalQuantity()
     displayTotalPrice(totalPrice)
     displayTotalQuantity(totalQuantity)
     deleteDataFromCache(item)
     deleteArticleFromPage(item)
-} 
+}
 
-const deleteDataFromCache = (item) =>{
-    const storage= localStorage.getItem("obj")
+const deleteDataFromCache = (item) => {
+    const storage = localStorage.getItem("obj")
     let storageParse = JSON.parse(storage);
     const key = item.id
     const colorKey = item.color
@@ -180,17 +180,17 @@ const deleteDataFromCache = (item) =>{
     localStorage.removeItem(key)
 }
 
-const deleteArticleFromPage = (item) =>  {
+const deleteArticleFromPage = (item) => {
     const articleToDelete = document.querySelector(
         `article[data-id="${item.id}"][data-color="${item.color}"]`  //on veut aussi la couleur de canap
     )
     articleToDelete.remove()
 }
 
-const updatePriceAndQuatity = (id, newValue) =>{ //on récupére l'id + la value qui change avec  l'event ligne 153
+const updatePriceAndQuatity = (id, newValue) => { //on récupére l'id + la value qui change avec  l'event ligne 153
     const itemToUpdate = cart.find((item) => item.id === id)
-    itemToUpdate.quantity = Number(newValue) //number devant car il m'a donné la nouvelle valeur en string
-    const {totalPrice, totalQuantity} = totalPriceTotalQuantity()
+    itemToUpdate.quantity = Number(newValue) 
+    const { totalPrice, totalQuantity } = totalPriceTotalQuantity()
     displayTotalPrice(totalPrice)
     displayTotalQuantity(totalQuantity)
 }
@@ -204,43 +204,43 @@ const submitValidation = (e) => {
     e.preventDefault() //Sert a annuler le refresh de la page
     if (cart.length === 0) {
         alert("Aucun produit sélectionné")
-        return 
+        return
     }
-    if (ifTheFormIsNotValidated()) return 
+    if (ifTheFormIsNotValidated()) return
     if (isEmailIsNotValidated()) return
     const validation = document.querySelector(".cart__order__form")
     const body = makeElementBody(validation)
-    fetch("http://localhost:3000/api/products/order", { //avec POST il faut rajouter un 2éme argument (avec l'url)
+    fetch("http://localhost:3000/api/products/order", { 
         method: "POST",
-        body: JSON.stringify(body), //donnés lisible pour l'API avec JSON.stingyfy
-        headers : {
-            "Accept" : "application/json" , 
-            "Content-Type" : "application/json" 
+        body: JSON.stringify(body), 
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
         },
     })
-    .then((res) => res.json())
-    .then((data) => { 
-        const orderId = data.orderId //orderId dans l'API
-        window.location.href = "confirmation.html" + "?orderId=" + orderId
-        return
-    })
+        .then((res) => res.json())
+        .then((data) => {
+            const orderId = data.orderId //orderId dans l'API
+            window.location.href = "confirmation.html" + "?orderId=" + orderId
+            return
+        })
 }
 
-const makeElementBody = (validation) => {
-    const firstName = validation.elements.firstName.value  // .element récupérer la valeur d'un form
+const makeElementBody = (validation) => {  //Champs demandé sur la fiche technique
+    const firstName = validation.elements.firstName.value  
     const lastName = validation.elements.lastName.value
     const address = validation.elements.address.value
     const city = validation.elements.city.value
     const email = validation.elements.email.value
     const body = {
-        contact: {  //nom de l'objet et clefs pris sur la doc
-            firstName: firstName ,
-            lastName: lastName ,
+        contact: {  
+            firstName: firstName,
+            lastName: lastName,
             address: address,
             city: city,
-            email: email          
+            email: email
         },
-        products: getIdsFromCache()
+        products: getIdsFromCache() 
     }
     return body
 }
@@ -248,17 +248,18 @@ const makeElementBody = (validation) => {
 const getIdsFromCache = () => {
     const numberOfProducts = localStorage.getItem("obj")
     let data = JSON.parse(numberOfProducts);
-    const ids = data.map(e => e.id) // créer un nouveau tableau avec les résultat de l'appel d'une fonction
+    const ids = data.map(e => e.id) // .map nous sert a récupérer l'id  du localstorage
     return ids
 }
 
 const ifTheFormIsNotValidated = () => {
     const form = document.querySelector(".cart__order__form")
     const inputs = form.querySelectorAll("input")
-    const inputArray = Array.from(inputs) // on transforme input en Array
+    const inputArray = Array.from(inputs) 
     const validation = inputArray.some((input) => { // .some test les élément du tableau, elle renvoie un Booléen
-        if (input.value === ""){
-        return true}
+        if (input.value === "") {
+            return true
+        }
         return false
     })
     if (validation) {
